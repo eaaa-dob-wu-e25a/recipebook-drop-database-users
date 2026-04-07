@@ -271,6 +271,20 @@ app.get('/tags', (req, res) => {
  * Create a new review for a recipe
  * Body: { recipe_id, user_id, rating, comment }
  */
+app.get('/reviews', (req, res) => {
+  try {
+    const reviews = db.prepare(`
+      SELECT id, recipe_id, user_id, rating, comment, created_at
+      FROM reviews
+      ORDER BY created_at DESC, id DESC
+      `).all();
+    res.json(reviews);
+  } catch (error) {
+    console.error('Error fetching reviews:', error);
+    res.status(500).json({ error: 'Failed to fetch reviews' });
+  }
+});
+
 app.post('/reviews', (req, res) => {
   try {
     const { recipe_id, user_id, rating, comment } = req.body;
